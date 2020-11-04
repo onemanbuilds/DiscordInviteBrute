@@ -1,5 +1,11 @@
 # DiscordInviteBrute
  Bruteforce discord server's invite code.
+
+# Installation
+```
+pip3 install -r requirements.txt
+``` 
+
 # Tool
 ![](https://i.ibb.co/mcpzNKb/example.png)
 
