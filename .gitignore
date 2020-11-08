@@ -130,3 +130,6 @@ DiscordInviteBrute/useragents.txt
 DiscordInviteBrute.zip
 DiscordInviteBrute/DiscordInviteBrute.exe
 DiscordInviteBrute/proxies.txt
+output/DiscordInviteBrute.exe
+output/proxies.txt
+output/useragents.txt
