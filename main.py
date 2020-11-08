@@ -3,7 +3,6 @@ from os import name,system
 from sys import stdout
 from random import choice
 from threading import Thread,Lock,active_count
-from fake_useragent import UserAgent
 from string import ascii_letters,digits
 from time import sleep
 import requests
@@ -28,17 +27,33 @@ class Main:
         self.lock.release()
 
     def ReadFile(self,filename,method):
-        with open(filename,method) as f:
+        with open(filename,method,encoding='utf8') as f:
             content = [line.strip('\n') for line in f]
             return content
 
     def GetRandomProxy(self):
         proxies_file = self.ReadFile('proxies.txt','r')
-        proxies = {
-            "http":"http://{0}".format(choice(proxies_file)),
-            "https":"https://{0}".format(choice(proxies_file))
+        proxies = {}
+        if self.proxy_type == 1:
+            proxies = {
+                "http":"http://{0}".format(choice(proxies_file)),
+                "https":"https://{0}".format(choice(proxies_file))
+            }
+        elif self.proxy_type == 2:
+            proxies = {
+                "http":"socks4://{0}".format(choice(proxies_file)),
+                "https":"socks4://{0}".format(choice(proxies_file))
+            }
+        else:
+            proxies = {
+                "http":"socks5://{0}".format(choice(proxies_file)),
+                "https":"socks5://{0}".format(choice(proxies_file))
             }
         return proxies
+
+    def GetRandomUserAgent(self):
+        useragents = self.ReadFile('useragents.txt','r')
+        return choice(useragents)
 
     def TitleUpdate(self):
         while True:
@@ -49,31 +64,27 @@ class Main:
         init(convert=True)
         self.clear()
         self.SetTitle('One Man Builds Discord Invite Brute Tool')
-        self.title = Style.BRIGHT+Fore.RED+"""                                        
-                  ______ _____ _____ _____ _________________   _____ _   _ _   _ _____ _____ _____ 
-                  |  _  \_   _/  ___/  __ \  _  | ___ \  _  \ |_   _| \ | | | | |_   _|_   _|  ___|
-                  | | | | | | \ `--.| /  \/ | | | |_/ / | | |   | | |  \| | | | | | |   | | | |__  
-                  | | | | | |  `--. \ |   | | | |    /| | | |   | | | . ` | | | | | |   | | |  __| 
-                  | |/ / _| |_/\__/ / \__/\ \_/ / |\ \| |/ /   _| |_| |\  \ \_/ /_| |_  | | | |___ 
-                  |___/  \___/\____/ \____/\___/\_| \_|___/    \___/\_| \_/\___/ \___/  \_/ \____/ 
-                                                                                                    
-                                                                                                                        
-                                       ____________ _   _ _____ _____                                                   
-                                       | ___ \ ___ \ | | |_   _|  ___|                                                  
-                                       | |_/ / |_/ / | | | | | | |__                                                    
-                                       | ___ \    /| | | | | | |  __|                                                   
-                                       | |_/ / |\ \| |_| | | | | |___                                                   
-                                       \____/\_| \_|\___/  \_/ \____/                                                   
-                                                                                                        
+        self.title = Style.BRIGHT+Fore.RED+"""
+                                 ╔══════════════════════════════════════════════════╗                                        
+                                         ╔╦╗╦╔═╗╔═╗╔═╗╦═╗╔╦╗  ╦╔╗╔╦  ╦╦╔╦╗╔═╗
+                                         ║║║╚═╗║  ║ ║╠╦╝ ║║   ║║║║╚╗╔╝║ ║ ║╣ 
+                                         ═╩╝╩╚═╝╚═╝╚═╝╩╚══╩╝  ╩╝╚╝ ╚╝ ╩ ╩ ╚═╝
+                                                   ╔╗ ╦═╗╦ ╦╔╦╗╔═╗                     
+                                                   ╠╩╗╠╦╝║ ║ ║ ║╣                      
+                                                   ╚═╝╩╚═╚═╝ ╩ ╚═╝                                                                   
+                                 ╚══════════════════════════════════════════════════╝                                                                              
                                                                                                                                      
         """
         print(self.title)
         self.hits = 0
         self.bads = 0
         self.retries = 0
-        self.ua = UserAgent()
         self.lock = Lock()
-        self.use_proxy = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] Would you like to use proxies ['+Fore.RED+'1'+Fore.CYAN+']yes ['+Fore.RED+'0'+Fore.CYAN+']no: '))
+        self.use_proxy = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] ['+Fore.RED+'1'+Fore.CYAN+']Proxy ['+Fore.RED+'0'+Fore.CYAN+']Proxyless: '))
+
+        if self.use_proxy == 1:
+            self.proxy_type = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] ['+Fore.RED+'1'+Fore.CYAN+']Https ['+Fore.RED+'2'+Fore.CYAN+']Socks4 ['+Fore.RED+'3'+Fore.CYAN+']Socks5: '))
+        
         self.threads_num = int(input(Style.BRIGHT+Fore.CYAN+'['+Fore.RED+'>'+Fore.CYAN+'] Threads: '))
         print('')
 
@@ -92,7 +103,7 @@ class Main:
             link = 'https://canary.discord.com/api/v8/invites/{0}'.format(code)
     
             headers = {
-                'User-Agent':self.ua.random,
+                'User-Agent':self.GetRandomUserAgent(),
                 'Content-Type':'application/json',
                 'Accept':'*/*',
                 'Connection':'keep-alive'

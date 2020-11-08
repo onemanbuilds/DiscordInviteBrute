@@ -125,3 +125,4 @@ dmypy.json
 .pyre/
 bads.txt
 hits.txt
+output/main.exe
