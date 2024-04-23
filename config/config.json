@@ -1,0 +1,8 @@
+{
+    "use_proxy":1,
+    "proxy_type":2,
+    "threads":1000,
+    "amount_to_brute":-1,
+    "invites_path":"config/invites.txt",
+    "proxies_path":"config/proxies.txt"
+}
