@@ -17,7 +17,7 @@
  - Third method, download the compiled versions from the releases tab on the right side.
 
 # Preview
-![](https://i.ibb.co/fFNtLJN/Windows-Terminal-Kp-Wzth-FKfz.png)
+![](https://i.ibb.co/fFNtLJN/Windows-Terminal-Kp-Wzth-FKfz.pn)
 
 # Discord Server
  - Join the discord server for more updates and to check the current process.
